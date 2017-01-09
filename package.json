@@ -19,7 +19,7 @@
   "dependencies": {
     "dateformat": "^2.0.0",
     "express": "^4.14.0",
-    "jade": "^1.11.0",
+    "pug": "^2.0.0-beta6",
     "timeago.js": "^2.0.4",
     "twitter": "^1.5.0"
   }

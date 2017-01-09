@@ -4,7 +4,7 @@ const app = express();
 const Twitter = require('twitter');
 
 app.set('views', './templates');
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.use(express.static('./css'));
 app.use(express.static('./images'));
 
@@ -13,45 +13,47 @@ const twitterTimeline = require('./twitterData.js').twitterTimeline;
 const twitterFriends = require('./twitterData.js').twitterFriends;
 const messagesRecieved = require('./twitterData.js').messagesRecieved;
 const messagesSent = require('./twitterData.js').messagesSent;
+const dmConvo = require('./dmConversation.js').dmConvo;
 
 let timelineResults;
 let friendResults;
 let messagesResults;
 let twitterData;
+let convoLogs;
 
-// Initial API call twitterTimeline to GET user's latest 5 tweets
+// Initial API call - twitterTimeline() to GET user's latest 5 tweets
 twitterTimeline()
 
-// Assign returned data from twitterTimeline to timelineResults
+// Assign returned data from twitterTimeline() to timelineResults
 .then((results) => {timelineResults = results})
 
 // API call twitterFriends to GET user's latest 5 friends
 .then(twitterFriends)
 
-// Assign returned data from timelineResults & twitterFriends to friendResults object
+// Assign returned data from timelineResults & twitterFriends() to friendResults object
 .then((results) => {friendResults = Object.assign(timelineResults, results)})
 
 // API call messagesRecieved to GET user's latest 3 messages recived
 .then(messagesRecieved)
 
-// Assign returned data from friendResults & messagesRecieved to messagesResults object
+// Assign returned data from friendResults & messagesRecieved() to messagesResults object
 .then((results) => {messagesResults = Object.assign(friendResults, results)})
 
 // API call messagesSent to GET user's latest 3 messages sent
 .then(messagesSent)
 
-// Assign returned data from messagesResults & messagesSent to twitterData object - twitterData object has data from all API calls
-.then((results) => {twitterData = Object.assign(messagesResults, results)})
+// Assign returned data from messagesResults & messagesSent() to twitterData object - twitterData object has data from all API calls
+.then((results) => {twitterData = Object.assign(messagesResults, results); convoLogs = dmConvo(twitterData.messagesRecieved, twitterData.messagesSent)})
 
 // Once all API calls have been made & twitterData object has been created, render page with assigned data
 .then(() => {
+	console.log(convoLogs)
 	app.get('/', (req, res) => {
 		res.render('layout', {
 			data: twitterData, 
 			tweets: twitterData.tweets, 
 			friends: twitterData.friends, 
-			messagesRecieved: twitterData.messagesRecieved,
-			messagesSent: twitterData.messagesSent
+			convoLogs: convoLogs
 		});
 	})
 });
