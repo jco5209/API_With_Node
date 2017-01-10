@@ -47,7 +47,6 @@ twitterTimeline()
 
 // Once all API calls have been made & twitterData object has been created, render page with assigned data
 .then(() => {
-	console.log(convoLogs)
 	app.get('/', (req, res) => {
 		res.render('layout', {
 			data: twitterData, 

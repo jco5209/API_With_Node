@@ -1,53 +1,14 @@
 .grid-33
   .app--section
     ul.app--user--list
-      li
-        .circle--fluid
-          .circle--fluid--cell.circle--fluid--primary
-            a.app--tweet--author
-              .app--avatar(style='background-image: url(' + friends.friend1.profile_img + ')')
-                img(src=friends.friend1.profile_img)
-              h4 #{friends.friend1.name}
-              p @#{friends.friend1.screen_name}
-          .circle--fluid--cell
-            a.button.button-text Unfollow
-      li
-        .circle--fluid
-          .circle--fluid--cell.circle--fluid--primary
-            a.app--tweet--author
-              .app--avatar(style='background-image: url(' + friends.friend2.profile_img + ')')
-                img(src=friends.friend2.profile_img)
-              h4 #{friends.friend2.name}
-              p @#{friends.friend2.screen_name}
-          .circle--fluid--cell
-            a.button.button-text Unfollow
-      li
-        .circle--fluid
-          .circle--fluid--cell.circle--fluid--primary
-            a.app--tweet--author
-              .app--avatar(style='background-image: url(' + friends.friend3.profile_img + ')')
-                img(src=friends.friend3.profile_img)
-              h4 #{friends.friend3.name}
-              p @#{friends.friend3.screen_name}
-          .circle--fluid--cell
-            a.button.button-text Unfollow
-      li
-        .circle--fluid
-          .circle--fluid--cell.circle--fluid--primary
-            a.app--tweet--author
-              .app--avatar(style='background-image: url(' + friends.friend4.profile_img + ')')
-                img(src=friends.friend4.profile_img)
-              h4 #{friends.friend4.name}
-              p @#{friends.friend4.screen_name}
-          .circle--fluid--cell
-            a.button.button-text Unfollow
-      li
-        .circle--fluid
-          .circle--fluid--cell.circle--fluid--primary
-            a.app--tweet--author
-              .app--avatar(style='background-image: url(' + friends.friend5.profile_img + ')')
-                img(src=friends.friend5.profile_img)
-              h4 #{friends.friend5.name}
-              p @#{friends.friend5.screen_name}
-          .circle--fluid--cell
-            a.button.button-text Unfollow
+      - for (var i = 0; i < friends.length; i++)  
+        li
+          .circle--fluid
+            .circle--fluid--cell.circle--fluid--primary
+              a.app--tweet--author
+                .app--avatar(style='background-image: url(' + friends[i].profile_img + ')')
+                  img(src=friends[i].profile_img)
+                h4 #{friends[i].name}
+                p @#{friends[i].screen_name}
+            .circle--fluid--cell
+              a.button.button-text Unfollow
