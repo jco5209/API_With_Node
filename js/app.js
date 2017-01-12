@@ -7,6 +7,7 @@ app.set('views', './templates');
 app.set('view engine', 'pug');
 app.use(express.static('./css'));
 app.use(express.static('./images'));
+app.use(express.static('./js'));
 
 // Require modules from twitterData.js
 const twitterTimeline = require('./twitterData.js').twitterTimeline;
@@ -19,7 +20,7 @@ let timelineResults;
 let friendResults;
 let messagesResults;
 let twitterData;
-let convoLogs;
+let logList;
 
 // Initial API call - twitterTimeline() to GET user's latest 5 tweets
 twitterTimeline()
@@ -43,19 +44,28 @@ twitterTimeline()
 .then(messagesSent)
 
 // Assign returned data from messagesResults & messagesSent() to twitterData object - twitterData object has data from all API calls
-.then((results) => {twitterData = Object.assign(messagesResults, results); convoLogs = dmConvo(twitterData.messagesRecieved, twitterData.messagesSent)})
+.then((results) => {twitterData = Object.assign(messagesResults, results); logList = dmConvo(twitterData.messagesRecieved, twitterData.messagesSent)})
 
 // Once all API calls have been made & twitterData object has been created, render page with assigned data
 .then(() => {
+	console.log(logList[1])
 	app.get('/', (req, res) => {
 		res.render('layout', {
 			data: twitterData, 
 			tweets: twitterData.tweets, 
 			friends: twitterData.friends, 
-			convoLogs: convoLogs
+			logList: logList[0][0]
 		});
 	})
 });
+
+app.get('/newmessages/:id', (req, res) => {
+	res.render('partials/newmessages', {
+		layout: false,
+		logList: logList[0][req.params.id]
+	})
+	console.log(req.params.id)
+})
 
 app.listen(3000, () => {
 	console.log("Server is running on port 3000.")

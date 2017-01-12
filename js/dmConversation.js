@@ -38,12 +38,15 @@ const dmConvo = (recieved, sent) => {
 		}
 	}
 
+	const logList = [];
+
 	// Sort messages based on date sent
 	for(let i in unique) {
 		unique[i].sort(compare)
+		logList.push(unique[i])
 	}
 
-	return unique
+	return [logList, distinct]
 
 }
 

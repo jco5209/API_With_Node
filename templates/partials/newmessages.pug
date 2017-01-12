@@ -1,21 +1,13 @@
-.grid-33
-  .app--section
-    ul.app--message--list
-      li
-        h3
-          | Conversation with 
-          a Jill Spore
-        ul.app--message--conversation
-          - for (var i = 0; i < convoLogs.Shnawpz.length; i++)
-            if convoLogs.Shnawpz[i].msgOut
-              li.app--message--me
-                .app--avatar(style='background-image: url(' + convoLogs.Shnawpz[i].profile_img + ')')
-                  img(src=convoLogs.Shnawpz[i].profile_img)
-                p.app--message--text #{convoLogs.Shnawpz[i].msg}
-                p.app--message--timestamp #{convoLogs.Shnawpz[i].date}
-            else if convoLogs.Shnawpz[i].msgIn                            
-              li.app--message
-                .app--avatar(style='background-image: url(' + convoLogs.Shnawpz[i].profile_img + ')')
-                  img(src=convoLogs.Shnawpz[i].profile_img)
-                p.app--message--text #{convoLogs.Shnawpz[i].msg}
-                p.app--message--timestamp #{convoLogs.Shnawpz[i].date}
+- for (var i = 0; i < logList.length; i++)
+  if logList[i].msgOut
+    li.app--message--me
+      .app--avatar(style='background-image: url(' + logList[i].profile_img + ')')
+        img(src=logList[i].profile_img)
+      p.app--message--text #{logList[i].msg}
+      p.app--message--timestamp #{logList[i].date}
+  else if logList[i].msgIn
+    li.app--message
+      .app--avatar(style='background-image: url(' + logList[i].profile_img + ')')
+        img(src=logList[i].profile_img)
+      p.app--message--text #{logList[i].msg}
+      p.app--message--timestamp #{logList[i].date}

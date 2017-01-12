@@ -62,4 +62,17 @@ html(lang='en')
             h2 Direct Messages
       include ./partials/timeline.pug
       include ./partials/following.pug
-      include ./partials/newmessages.pug
+      .grid-33
+        .app--section
+          ul.app--message--list
+            li
+              h3
+                | Conversation with 
+                a.user--log #{logList[0].sender}
+              ul.app--message--conversation              
+                include ./partials/newmessages.pug
+      script(type='text/javascript').
+        var logList =!{JSON.stringify(logList)}
+      script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+      script(src='/messages.js')
+
