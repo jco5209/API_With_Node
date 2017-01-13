@@ -67,8 +67,11 @@ html(lang='en')
           ul.app--message--list
             li
               h3
-                | Conversation with 
+                | Conversation with
                 a.user--log #{logList[0].sender}
+                  .user--log--conent
+                    - for (var i = 0; i < users.length; i++)
+                      a #{users[i]}
               ul.app--message--conversation              
                 include ./partials/newmessages.pug
       script(type='text/javascript').

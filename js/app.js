@@ -54,7 +54,8 @@ twitterTimeline()
 			data: twitterData, 
 			tweets: twitterData.tweets, 
 			friends: twitterData.friends, 
-			logList: logList[0][0]
+			logList: logList[0][0],
+			users: logList[1]
 		});
 	})
 });
