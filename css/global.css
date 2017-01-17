@@ -2504,22 +2504,34 @@ input[type="button"] {
 
 .user--log {
   position: relative;
+  cursor: pointer;
 }
 
-.user--log--conent {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    right: 0;
-    z-index: 9999;
+.user--log--content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  left: 120px;
+  top: 20px;
+  border: solid 1px gray;
+  z-index: 9999;
 }
 
-.user--log--conent a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
+.user--log--content a {
+  display: block;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
 }
+
+.log {
+  padding: 4px 2px;
+  list-style: none;
+  color: #0c85d0;
+  cursor: pointer;
+}
+
+

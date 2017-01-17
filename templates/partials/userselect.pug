@@ -1,0 +1,11 @@
+.grid-33
+  .app--section
+    ul.app--message--list
+      li
+        h3
+          | Conversation with 
+          a.user--log #{logList[0].sender}
+            ul.user--log--content
+              - for (var i = 0; i < users.length; i++)
+                li.log #{users[i]}
+        ul.app--message--conversation 

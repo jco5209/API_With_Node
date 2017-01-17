@@ -48,7 +48,6 @@ twitterTimeline()
 
 // Once all API calls have been made & twitterData object has been created, render page with assigned data
 .then(() => {
-	console.log(logList[1])
 	app.get('/', (req, res) => {
 		res.render('layout', {
 			data: twitterData, 
@@ -60,12 +59,14 @@ twitterTimeline()
 	})
 });
 
+// Route to load new conversation logs
 app.get('/newmessages/:id', (req, res) => {
 	res.render('partials/newmessages', {
 		layout: false,
+
+		// Uses :id parameter to select conversation indicies - :id parameter will be an index
 		logList: logList[0][req.params.id]
 	})
-	console.log(req.params.id)
 })
 
 app.listen(3000, () => {
