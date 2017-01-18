@@ -14,6 +14,7 @@ const twitterTimeline = require('./twitterData.js').twitterTimeline;
 const twitterFriends = require('./twitterData.js').twitterFriends;
 const messagesRecieved = require('./twitterData.js').messagesRecieved;
 const messagesSent = require('./twitterData.js').messagesSent;
+const statusUpdate = require('./twitterData.js').statusUpdate;
 const dmConvo = require('./dmConversation.js').dmConvo;
 
 let timelineResults;
@@ -67,6 +68,12 @@ app.get('/newmessages/:id', (req, res) => {
 		// Uses :id parameter to select conversation indicies - :id parameter will be an index
 		logList: logList[0][req.params.id]
 	})
+})
+
+app.post('/status/:id', (req, res) => {
+	console.log('Insdie status route ' + req.params.id);
+	statusUpdate(req.params.id);
+	return 'hello'
 })
 
 app.listen(3000, () => {

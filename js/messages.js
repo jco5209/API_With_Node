@@ -5,6 +5,12 @@
 	var log = $('.log');
 	var convos = $('.user--log--content');
 
+	var tweet = $('#tweet-textarea');
+	var tweetButton = $('.button-primary');
+	var tweetChr = $('#tweet-char');
+	var tweetLimit = true;
+
+
 	// Toggle Conversation Logs Display
 	userLog.click(function() {
 		convos.toggle();
@@ -34,6 +40,31 @@
 
 		convos.toggle();
 
+	});
+
+
+	tweetButton.click(function(e) {
+		e.preventDefault();
+		console.log(tweet.val());
+		if(tweetLimit) {
+			$.post( "/status/" + tweet.val(), function(data) {
+				console.log(data)
+			} );
+		}
+	});
+
+
+	tweet.on('change keyup paste', function() {
+		console.log('changed! ', tweet.val().length);
+		var tweetLimit = 140 - tweet.val().length;
+		tweetChr.text(tweetLimit);
+		if(tweetLimit < 0) {
+			tweetChr.css('color', '#eb4a33');
+			tweetLimit = false;
+		} else if(tweetChr.css('color') != 'rgb(204, 204, 204)'){
+			tweetChr.css('color', '#ccc');
+			tweetLimit = true;
+		}
 	});
 
 })()

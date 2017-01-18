@@ -91,6 +91,12 @@ const messagesSent = (messagesRecieved) => {
 	return promise
 }
 
+const statusUpdate = (statusText) => {
+	client.post('statuses/update', {status: statusText},  function(error, tweet, response) {
+	  if(error) throw error;
+	  //console.log(tweet);
+	});	
+}
 
 
 // Export Modules to be used in app.js
@@ -98,4 +104,5 @@ module.exports.twitterTimeline = twitterTimeline;
 module.exports.twitterFriends = twitterFriends;
 module.exports.messagesRecieved = messagesRecieved;
 module.exports.messagesSent = messagesSent;
+module.exports.statusUpdate = statusUpdate;
 
