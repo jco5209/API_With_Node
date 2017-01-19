@@ -57,7 +57,7 @@ twitterTimeline()
 			logList: logList[0][0],
 			users: logList[1]
 		});
-	})
+	});
 });
 
 // Route to load new conversation logs
@@ -67,14 +67,18 @@ app.get('/newmessages/:id', (req, res) => {
 
 		// Uses :id parameter to select conversation indicies - :id parameter will be an index
 		logList: logList[0][req.params.id]
-	})
-})
+	});
+});
 
+// Route to send tweet POST
 app.post('/status/:id', (req, res) => {
-	console.log('Insdie status route ' + req.params.id);
+
+	// Call statusUdate with tweet data to POST request
 	statusUpdate(req.params.id);
-	return 'hello'
-})
+
+	// Send client data to complete request
+	res.send(console.log('POST request sent with value of ' + req.params.id));
+});
 
 app.listen(3000, () => {
 	console.log("Server is running on port 3000.")

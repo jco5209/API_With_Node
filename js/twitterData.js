@@ -91,10 +91,12 @@ const messagesSent = (messagesRecieved) => {
 	return promise
 }
 
+// POST request to tweet to user's timeline
 const statusUpdate = (statusText) => {
+
+	// API call with status: as tweet data 
 	client.post('statuses/update', {status: statusText},  function(error, tweet, response) {
 	  if(error) throw error;
-	  //console.log(tweet);
 	});	
 }
 
