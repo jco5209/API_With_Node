@@ -2,11 +2,11 @@
 const Twitter = require('twitter');
 const format = require('dateformat');
 const timeago = require('timeago.js');
-const dmConvo = require('./dmConversation.js').dmConvo;
-const mRCallback = require('./dmConversation.js').mRCallback;
-const mSCallback = require('./dmConversation.js').mSCallback;
-const friendsCallback = require('./dmConversation.js').friendsCallback;
-const tweetsCallback = require('./dmConversation.js').tweetsCallback;
+const dmConvo = require('./twitterDataCB.js').dmConvo;
+const mRCallback = require('./twitterDataCB.js').mRCallback;
+const mSCallback = require('./twitterDataCB.js').mSCallback;
+const friendsCallback = require('./twitterDataCB.js').friendsCallback;
+const tweetsCallback = require('./twitterDataCB.js').tweetsCallback;
 
 // Credentials are entered in process environment - this ensures the security of sensitive data
 const client = new Twitter({

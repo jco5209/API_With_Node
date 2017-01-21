@@ -15,7 +15,7 @@ const twitterFriends = require('./twitterData.js').twitterFriends;
 const messagesRecieved = require('./twitterData.js').messagesRecieved;
 const messagesSent = require('./twitterData.js').messagesSent;
 const statusUpdate = require('./twitterData.js').statusUpdate;
-const dmConvo = require('./dmConversation.js').dmConvo;
+const dmConvo = require('./twitterDataCB.js').dmConvo;
 
 let timelineResults;
 let friendResults;
