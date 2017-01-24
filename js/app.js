@@ -1,15 +1,17 @@
 'use strict';
+
+// Module Dependencies
+
 const express = require('express');
+const winston = require('winston');
 const app = express();
 const Twitter = require('twitter');
+const morgan = require('morgan');
 
-app.set('views', './templates');
-app.set('view engine', 'pug');
-app.use(express.static('./css'));
-app.use(express.static('./images'));
-app.use(express.static('./js'));
 
-// Require modules from twitterData.js
+
+// Require'd modules from twitterData.js
+
 const twitterTimeline = require('./twitterData.js').twitterTimeline;
 const twitterFriends = require('./twitterData.js').twitterFriends;
 const messagesRecieved = require('./twitterData.js').messagesRecieved;
@@ -17,43 +19,50 @@ const messagesSent = require('./twitterData.js').messagesSent;
 const statusUpdate = require('./twitterData.js').statusUpdate;
 const dmConvo = require('./twitterDataCB.js').dmConvo;
 
-let timelineResults;
+// Config
+
+app.set('views', './templates');
+app.set('view engine', 'pug');
+app.use(express.static('./css'));
+app.use(express.static('./images'));
+app.use(express.static('./js'));
+app.use(morgan('combined'));
+
+
+
+// Twitter API variables
+
 let friendResults;
-let messagesResults;
 let twitterData;
+let sent;
+let recieved;
 let logList;
 
-// Initial API call - twitterTimeline() to GET user's latest 5 tweets
-twitterTimeline()
+// Twitter Data Promise Handling
 
-// Assign returned data from twitterTimeline() to timelineResults
-.then((results) => {timelineResults = results})
+messagesRecieved()
 
-// API call twitterFriends to GET user's latest 5 friends
-.then(twitterFriends)
+.then((results) => {recieved = results})
 
-// Assign returned data from timelineResults & twitterFriends() to friendResults object
-.then((results) => {friendResults = Object.assign(timelineResults, results)})
-
-// API call messagesRecieved to GET user's latest 3 messages recived
-.then(messagesRecieved)
-
-// Assign returned data from friendResults & messagesRecieved() to messagesResults object
-.then((results) => {messagesResults = Object.assign(friendResults, results)})
-
-// API call messagesSent to GET user's latest 3 messages sent
 .then(messagesSent)
 
-// Assign returned data from messagesResults & messagesSent() to twitterData object - twitterData object has data from all API calls
-.then((results) => {twitterData = Object.assign(messagesResults, results); logList = dmConvo(twitterData.messagesRecieved, twitterData.messagesSent)})
+.then((results) => {sent = results; logList = dmConvo(recieved.messagesRecieved, sent.messagesSent)})
+
+.then(twitterTimeline)
+
+.then((results) => {twitterData = results})
+
+.then(twitterFriends)
+
+.then((results) => {friendResults = results})
 
 // Once all API calls have been made & twitterData object has been created, render page with assigned data
 .then(() => {
-	app.get('/', (req, res) => {
+	app.get('/', (req, res, next) => {
 		res.render('layout', {
 			data: twitterData, 
 			tweets: twitterData.tweets, 
-			friends: twitterData.friends, 
+			friends: friendResults.friends, 
 			logList: logList[0][0],
 			users: logList[1]
 		});
@@ -70,6 +79,18 @@ app.get('/newmessages/:id', (req, res) => {
 	});
 });
 
+app.get('/newtweet/', (req, res) => {
+	twitterTimeline()
+	.then((results) => {twitterData = results})
+	.then(() => {
+		res.render('partials/timeline', {
+			layout: false,
+			data: twitterData,
+			tweets: twitterData.tweets
+		});		
+	})
+});
+
 // Route to send tweet POST
 app.post('/status/:id', (req, res) => {
 
@@ -77,11 +98,16 @@ app.post('/status/:id', (req, res) => {
 	statusUpdate(req.params.id);
 
 	// Send client data to complete request
-	res.send(console.log('POST request sent with value of ' + req.params.id));
+	return res.send(console.log('POST request sent with value of ' + req.params.id));
 });
+
+
+// Server
 
 app.listen(3000, () => {
 	console.log("Server is running on port 3000.")
 });
+
+// Error Handling
 
 

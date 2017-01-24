@@ -52,7 +52,7 @@ html(lang='en')
       .app--section--header
         .grid-33
           .app--section--heading
-            h2 Timeline
+            h2.tweet-h2 Timeline
         .grid-33
           .app--section--heading
             strong
@@ -60,7 +60,10 @@ html(lang='en')
         .grid-33
           .app--section--heading
             h2 Direct Messages
-      include ./partials/timeline.pug
+      .grid-33
+        .app--section  
+          ul.app--tweet--list    
+            include ./partials/timeline.pug
       include ./partials/following.pug
       .grid-33
         .app--section

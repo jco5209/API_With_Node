@@ -2534,4 +2534,11 @@ input[type="button"] {
   cursor: pointer;
 }
 
+.new-tweet {
+  cursor: pointer;
+  color: red;
+  border: 1px solid red;
+  border-radius: 25%;
+}
+
 

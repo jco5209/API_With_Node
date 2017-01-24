@@ -11,6 +11,8 @@
 	var tweetLimit = true;
 	var tweetCounter;
 
+	var tweetList = $('.app--tweet--list');
+
 
 	// Toggle Conversation Logs Display
 	userLog.click(function() {
@@ -61,9 +63,23 @@
 
 			// Reset tweetCounter
 			tweetChr.text('140');
+
+			setTimeout(function(){
+
+				$('.tweet-h2').append('<span class="new-tweet"> +1</span>');
+
+			}, 5000);
+
 		}
 	});
 
+	$('.tweet-h2').on("click", ".new-tweet", function() {
+		console.log('inside new tweet click function')
+		tweetList.html('');
+		$.get("/newtweet/", function( data ) {
+			tweetList.html(data);
+		});
+	})
 
 	// On tweet text area input
 	tweet.on('change keyup paste', function() {
