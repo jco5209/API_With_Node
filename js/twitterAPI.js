@@ -3,24 +3,24 @@ const Twitter = require('twitter');
 const format = require('dateformat');
 const timeago = require('timeago.js');
 const winston = require('winston');
-const dmConvo = require('./twitterDataCB.js').dmConvo;
-const mRCallback = require('./twitterDataCB.js').mRCallback;
-const mSCallback = require('./twitterDataCB.js').mSCallback;
-const friendsCallback = require('./twitterDataCB.js').friendsCallback;
-const tweetsCallback = require('./twitterDataCB.js').tweetsCallback;
+const dmConvo = require('./twitterAPIData.js').dmConvo;
+const mRCallback = require('./twitterAPIData.js').mRCallback;
+const mSCallback = require('./twitterAPIData.js').mSCallback;
+const friendsCallback = require('./twitterAPIData.js').friendsCallback;
+const tweetsCallback = require('./twitterAPIData.js').tweetsCallback;
 
 
 const tsFormat = () => (new Date()).toLocaleTimeString();
 const logger = new (winston.Logger)({
   transports: [
-    // colorize the output to the console
     new (winston.transports.Console)({
       timestamp: tsFormat,
-      colorize: true
+      colorize: true,
+      //json: true
     })
   ]
 });
-logger.level = 'error';
+logger.level = 'debug';
 
 // Credentials are entered in process environment - this ensures the security of sensitive data
 const client = new Twitter({
@@ -38,7 +38,8 @@ const params = {screen_name: 'jtc0_0'};
 // GET user's latest 3 messages recieved - twitterFriends's resolved promise is passed into here in order to build upon the initial object
 const messagesRecieved = () => {
 
-	logger.info('twitterData.js: messagesRecieved() CALLED | ', 'Promise: API GET Request for Twitter Recieved Messages')
+	logger.verbose('twitterAPI.js: messagesRecieved() CALLED | ', 'Promise: API GET Request for Twitter Recieved Messages | ', 'Should Call mRCallback(messages)');
+	logger.debug('twitterAPI.js: messagesRecieved NO Arguments');
 
 	// Create a new promise to resolve & return a GET request for the user's latest 3 messages recieved
 	const promise = new Promise((resolve, reject) => {
@@ -54,11 +55,6 @@ const messagesRecieved = () => {
 		});	
 	})
 
-	// promise.catch(function(e) {
-	// 	logger.error(e)
-	// })
-
-	logger.info('twitterData.js: messagesRecieved() RETURNING | ', 'Returning object from mRCallback')
 
 	return promise
 }
@@ -66,7 +62,8 @@ const messagesRecieved = () => {
 // GET user's latest 3 messages sent - messagesRecieved's resolved promise is passed into here in order to build upon the initial object
 const messagesSent = (messages) => {
 
-	logger.info('twitterData.js: messagesSent(messages) CALLED | ', 'Promise: API GET Request for Twitter Sent Messages')
+	logger.verbose('twitterAPI.js: messagesSent(messages) CALLED | ', 'Promise: API GET Request for Twitter Sent Messages | ', 'Should Call mSCallback(messages)');
+	logger.debug('twitterAPI.js: messagesSent Argument | ', {messagesSent_argument: messages});
 
 	// Create a new promise to resolve & return a GET request for the user's latest 3 messages sent
 	const promise = new Promise((resolve, reject) => {
@@ -81,15 +78,14 @@ const messagesSent = (messages) => {
 		});	
 	})
 
-	logger.info('twitterData.js: messagesSent(messages) RETURNING | ', 'Returning object from msCallback')
-
 	return promise
 }
 
 // GET user's latest 5 tweets
 const twitterTimeline = () => {
 
-	logger.info('twitterData.js: twitterTimeline() CALLED | ', 'Promise: API GET Request for Twitter Timeline Data')
+	logger.verbose('twitterAPI.js: twitterTimeline() CALLED | ', 'Promise: API GET Request for Twitter Timeline Data | ', 'Should Call tweetsCallback(tweets)');
+	logger.debug('twitterAPI.js: twitterTimeline NO Arguments');
 
 	// Create a new promise to resolve & return a GET request for the user's timeline
 	const promise = new Promise((resolve, reject) => {
@@ -104,15 +100,14 @@ const twitterTimeline = () => {
 		});	
 	})	
 
-	logger.info('twitterData.js: twitterTimeline() RETURNING | ', 'Returning object from tweetsCallback')
-
 	return promise
 }
 
 // GET user's latest 5 friends - twitterTimeline's resolved promise is passed into here in order to build upon the initial object
 const twitterFriends = () => {
 
-	logger.info('twitterData.js: twitterFriends() CALLED | ', 'Promise: API GET Request for Twitter Friends Data')
+	logger.verbose('twitterAPI.js: twitterFriends() CALLED | ', 'Promise: API GET Request for Twitter Friends Data | ', 'Should Call friendsCallback(friends)');
+	logger.debug('twitterAPI.js: twitterFriends NO Arguments');
 
 	// Create a new promise to resolve & return a GET request for the user's latest friends
 	const promise = new Promise((resolve, reject) => {
@@ -127,19 +122,30 @@ const twitterFriends = () => {
 		});	
 	})
 
-	logger.info('twitterData.js: twitterFriends() RETURNING | ', 'Returning object from friendsCallback')
-
 	return promise
+}
+
+const unfriend = (screen_name) => {
+
+	logger.verbose('twitterAPI.js: unfriend(screen_name) CALLED | ', 'Promise: API GET Request for Twitter Friends Data | ', 'Should Call friendsCallback(friends)');
+	logger.debug('twitterAPI.js: unfriend Argument | ', {unfriend_argument: screen_name});
+
+	client.post('friendships/destroy', {screen_name: screen_name}, (error, unfriend, response) => {
+		if(!error) {
+			console.log(unfriend)
+		}else {logger.error(error)}
+	})
 }
 
 
 // POST request to tweet to user's timeline
 const statusUpdate = (statusText) => {
 
-	logger.info('twitterData.js: statusUpdate(statusText) CALLED | ', 'Promise: API POST Request for Posting New Tweet')
+	logger.verbose('twitterAPI.js: statusUpdate(statusText) CALLED | ', 'Promise: API POST Request for Posting New Tweet | ', 'Should Route From /status/:id')
+	logger.debug('twitterAPI.js: statusUpdate Argument | ', {statusUpdate_argument: statusText});
 
 	// API call with status: as tweet data 
-	client.post('statuses/update', {status: statusText},  function(error, tweet, response) {
+	client.post('statuses/update', {status: statusText},  (error, tweet, response) => {
 	  if(error) logger.error(error);
 	});	
 }
@@ -151,4 +157,5 @@ module.exports.twitterFriends = twitterFriends;
 module.exports.messagesRecieved = messagesRecieved;
 module.exports.messagesSent = messagesSent;
 module.exports.statusUpdate = statusUpdate;
+module.exports.unfriend = unfriend;
 

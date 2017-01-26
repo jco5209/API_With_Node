@@ -9,16 +9,18 @@ const logger = new (winston.Logger)({
     // colorize the output to the console
     new (winston.transports.Console)({
       timestamp: tsFormat,
-      colorize: true
+      colorize: true,
+      //json: true
     })
   ]
 });
-logger.level = 'error';
+logger.level = 'debug';
 
 // Determine unique user messages from reoccuring user messages 
 const dmConvo = (recieved, sent) => {
 
-	logger.info('twitterDataCB.js: dmConvo(recieved, sent) CALLED | ', 'Create unique Sender/Recipient Objects & Uninque Name Array > Push both recieved & sent messages to respective Unique User Object > Sort messages by date')
+	logger.verbose('twitterAPIData.js: dmConvo(recieved, sent) CALLED | ', 'Create unique Sender/Recipient Objects & Uninque Name Array > Push both recieved & sent messages to respective Unique User Object > Sort messages by date');
+	logger.debug('twitterAPIData.js: dmConvo Arguments | ', {dmConvo_arguments: [recieved, sent]});
 
 	const unique = {};
 	const distinct = [];
@@ -63,8 +65,8 @@ const dmConvo = (recieved, sent) => {
 		logList.push(unique[i])
 	}
 
-	logger.info('twitterDataCB.js: dmConvo(recieved, sent) RETURNING | ', 'Returning [logList Object & Unqiue User Array]')
-	logger.debug({returnObject: [logList, distinct]})
+	logger.verbose('twitterAPIData.js: dmConvo(recieved, sent) RETURNING | ', 'Returning [logList Object & Unqiue User Array]');
+	logger.debug('twitterAPIData.js: dmConvo returned object | ', {dmConvo_returnObject: [logList, distinct]});
 
 	return [logList, distinct]
 
@@ -84,7 +86,8 @@ const compare = (a, b) => {
 // MessagesRecieved Resolver Callback
 const mRCallback = (messages) => {
 
-	logger.info('twitterDataCB.js: mRCallback(messages) CALLED | ', 'Object Creator for twitterData.js: messagesRecieved() data')
+	logger.verbose('twitterAPIData.js: mRCallback(messages) CALLED | ', 'Object Creator for twitterData.js: messagesRecieved() data')
+	logger.debug('twitterAPIData.js: mRCallback Argument | ', {mRCallback_arguments: messages});
 
 	const promise = {};
 	promise.messagesRecieved = [];
@@ -96,8 +99,8 @@ const mRCallback = (messages) => {
 		promise.messagesRecieved.push({msg: messages[i].text, date: new timeago().format(messages[i].created_at), profile_img: messages[i].sender.profile_image_url, rawDate: new Date(messages[i].created_at).getTime(), id_str: messages[i].id_str, sender: messages[i].sender.name, msgIn: true})
 	}
 
-	logger.info('twitterDataCB.js: mRCallback(messages) RETURNING | ', 'Returning object')
-	logger.debug({returnObject: promise})
+	logger.verbose('twitterAPIData.js: mRCallback(messages) RETURNING | ', 'Returning object');
+	logger.debug('twitterAPIData.js: mRCallback returned object | ', {mRCallback_returnObject: promise});
 
 	return promise
 }
@@ -105,7 +108,8 @@ const mRCallback = (messages) => {
 // MessagesSent Resolver Callback
 const mSCallback = (messages) => {
 
-	logger.info('twitterDataCB.js: mSCallback(messages) CALLED | ', 'Object Creator for twitterData.js: messagesSent() data')
+	logger.verbose('twitterAPIData.js: mSCallback(messages) CALLED | ', 'Object Creator for twitterData.js: messagesSent() data');
+	logger.debug('twitterAPIData.js: mSCallback Argument | ', {mSCallback_argument: messages});
 
 	const promise = {};
 	promise.messagesSent = [];
@@ -117,8 +121,8 @@ const mSCallback = (messages) => {
 		promise.messagesSent.push({msg: messages[i].text, date: new timeago().format(messages[i].created_at), profile_img: messages[i].sender.profile_image_url, rawDate: new Date(messages[i].created_at).getTime(), id_str: messages[i].id_str, recipient: messages[i].recipient.name, msgOut: true})
 	}
 
-	logger.info('twitterDataCB.js: mSCallback(messages) RETURNING | ', 'Returning object')
-	logger.debug({returnObject: promise})
+	logger.verbose('twitterAPIData.js: mSCallback(messages) RETURNING | ', 'Returning object');
+	logger.debug('twitterAPIData.js: mRSallback returned object | ', {mRCallback_returnObject: promise});
 
 	return promise
 }
@@ -126,7 +130,8 @@ const mSCallback = (messages) => {
 // Callback for User's timeline
 const tweetsCallback = (tweets) => {
 
-	logger.info('twitterDataCB.js: tweetsCallback(tweets) CALLED | ', 'Object Creator for twitterData.js: twitterTimeline() data')
+	logger.verbose('twitterAPIData.js: tweetsCallback(tweets) CALLED | ', 'Object Creator for twitterData.js: twitterTimeline() data | ')
+	logger.debug('twitterAPIData.js: tweetsCallback Argument | ', {tweetsCallback_argument: tweets});
 
 	const promise = {};
 
@@ -143,15 +148,16 @@ const tweetsCallback = (tweets) => {
 		promise.tweets.push({text: tweets[i].text, date: new timeago().format(tweets[i].created_at), favorite_count: tweets[i].favorite_count, retweet_count: tweets[i].retweet_count});
 	}
 
-	logger.info('twitterDataCB.js: tweetsCallback(tweets) RETURNING | ', 'Returning object')
-	logger.debug({returnObject: promise})
+	logger.verbose('twitterAPIData.js: tweetsCallback(tweets) RETURNING | ', 'Returning object')
+	logger.debug('twitterAPIData.js: tweetsCallback returned Object | ', {tweetsCallback_returnObject: promise})
 
 	return promise
 }
 
 const friendsCallback = (friends) => {
 
-	logger.info('twitterDataCB.js: friendsCallback(friends) CALLED | ', 'Object Creator for twitterData.js: twitterFriends() data')
+	logger.verbose('twitterAPIData.js: friendsCallback(friends) CALLED | ', 'Object Creator for twitterData.js: twitterFriends() data');
+	logger.debug('twitterAPIData.js: friendsCallback Argument | ', {friendsCallback_argument: friends});
 
 	const promise = {};
 	promise.friends = [];
@@ -163,8 +169,8 @@ const friendsCallback = (friends) => {
 		promise.friends.push({name: friends.users[i].name, screen_name: friends.users[i].screen_name, profile_img: friends.users[i].profile_image_url})
 	}
 
-	logger.info('twitterDataCB.js: friendsCallback(friends) RETURNING | ', 'Returning object')
-	logger.debug({returnObject: promise})
+	logger.verbose('twitterAPIData.js: friendsCallback(friends) RETURNING | ', 'Returning object');
+	logger.debug('twitterAPIData.js: friendsCallback returned Object | ', {friendsCallback_returnObject: promise});
 
 	return promise
 }

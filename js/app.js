@@ -8,16 +8,15 @@ const app = express();
 const Twitter = require('twitter');
 const morgan = require('morgan');
 
+// Require'd modules from twitterAPI.js & twitterAPIData
 
-
-// Require'd modules from twitterData.js
-
-const twitterTimeline = require('./twitterData.js').twitterTimeline;
-const twitterFriends = require('./twitterData.js').twitterFriends;
-const messagesRecieved = require('./twitterData.js').messagesRecieved;
-const messagesSent = require('./twitterData.js').messagesSent;
-const statusUpdate = require('./twitterData.js').statusUpdate;
-const dmConvo = require('./twitterDataCB.js').dmConvo;
+const twitterTimeline = require('./twitterAPI.js').twitterTimeline;
+const twitterFriends = require('./twitterAPI.js').twitterFriends;
+const messagesRecieved = require('./twitterAPI.js').messagesRecieved;
+const messagesSent = require('./twitterAPI.js').messagesSent;
+const statusUpdate = require('./twitterAPI.js').statusUpdate;
+const dmConvo = require('./twitterAPIData.js').dmConvo;
+const unfriend = require('./twitterAPI.js').unfriend;
 
 // Config
 
@@ -29,14 +28,13 @@ app.use(express.static('./js'));
 app.use(morgan('combined'));
 
 
-
 // Twitter API variables
 
-let friendResults;
-let twitterData;
-let sent;
 let recieved;
+let sent;
 let logList;
+let twitterData;
+let friendResults;
 
 // Twitter Data Promise Handling
 
@@ -58,7 +56,7 @@ messagesRecieved()
 
 // Once all API calls have been made & twitterData object has been created, render page with assigned data
 .then(() => {
-	app.get('/', (req, res, next) => {
+	app.get('/', (req, res) => {
 		res.render('layout', {
 			data: twitterData, 
 			tweets: twitterData.tweets, 
@@ -91,6 +89,12 @@ app.get('/newtweet/', (req, res) => {
 	})
 });
 
+app.post('/unfriend/:id', (req, res) => {
+	unfriend(req.params.id);
+
+	return res.send(console.log('POST request with value of ' + req.params.id));
+})
+
 // Route to send tweet POST
 app.post('/status/:id', (req, res) => {
 
@@ -107,7 +111,5 @@ app.post('/status/:id', (req, res) => {
 app.listen(3000, () => {
 	console.log("Server is running on port 3000.")
 });
-
-// Error Handling
 
 

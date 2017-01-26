@@ -79,6 +79,7 @@ html(lang='en')
                 include ./partials/newmessages.pug
       script(type='text/javascript').
         var logList =!{JSON.stringify(logList)}
+        var friends =!{JSON.stringify(friends)}
       script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
-      script(src='/messages.js')
+      script(src='/client.js')
 
