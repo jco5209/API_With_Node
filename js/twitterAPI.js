@@ -1,15 +1,15 @@
 'use strict';
-const Twitter = require('twitter');
-const format = require('dateformat');
-const timeago = require('timeago.js');
-const winston = require('winston');
-const dmConvo = require('./twitterAPIData.js').dmConvo;
-const mRCallback = require('./twitterAPIData.js').mRCallback;
-const mSCallback = require('./twitterAPIData.js').mSCallback;
-const friendsCallback = require('./twitterAPIData.js').friendsCallback;
-const tweetsCallback = require('./twitterAPIData.js').tweetsCallback;
+const Twitter 	= require('twitter'),
+format 		  	= require('dateformat'),
+timeago 	  	= require('timeago.js'),
+winston 	  	= require('winston'),
+dmConvo 	  	= require('./twitterAPIData.js').dmConvo,
+mRCallback 	  	= require('./twitterAPIData.js').mRCallback,
+mSCallback 	  	= require('./twitterAPIData.js').mSCallback,
+friendsCallback = require('./twitterAPIData.js').friendsCallback,
+tweetsCallback  = require('./twitterAPIData.js').tweetsCallback;
 
-
+// Setup winston logging
 const tsFormat = () => (new Date()).toLocaleTimeString();
 const logger = new (winston.Logger)({
   transports: [
@@ -20,7 +20,7 @@ const logger = new (winston.Logger)({
     })
   ]
 });
-logger.level = 'debug';
+logger.level = 'error';
 
 // Credentials are entered in process environment - this ensures the security of sensitive data
 const client = new Twitter({
@@ -125,15 +125,15 @@ const twitterFriends = () => {
 	return promise
 }
 
+// POST request to twitter API to unfriend selected friend
 const unfriend = (screen_name) => {
 
 	logger.verbose('twitterAPI.js: unfriend(screen_name) CALLED | ', 'Promise: API GET Request for Twitter Friends Data | ', 'Should Call friendsCallback(friends)');
 	logger.debug('twitterAPI.js: unfriend Argument | ', {unfriend_argument: screen_name});
 
+	// API call with selected user's screen_name
 	client.post('friendships/destroy', {screen_name: screen_name}, (error, unfriend, response) => {
-		if(!error) {
-			console.log(unfriend)
-		}else {logger.error(error)}
+		if(error){logger.error(error)};
 	})
 }
 
@@ -146,16 +146,16 @@ const statusUpdate = (statusText) => {
 
 	// API call with status: as tweet data 
 	client.post('statuses/update', {status: statusText},  (error, tweet, response) => {
-	  if(error) logger.error(error);
-	});	
+	  if(error) {logger.error(error)};
+	});
 }
 
 
 // Export Modules to be used in app.js
-module.exports.twitterTimeline = twitterTimeline;
-module.exports.twitterFriends = twitterFriends;
+module.exports.twitterTimeline  = twitterTimeline;
+module.exports.twitterFriends   = twitterFriends;
 module.exports.messagesRecieved = messagesRecieved;
-module.exports.messagesSent = messagesSent;
-module.exports.statusUpdate = statusUpdate;
-module.exports.unfriend = unfriend;
+module.exports.messagesSent 	= messagesSent;
+module.exports.statusUpdate 	= statusUpdate;
+module.exports.unfriend 		= unfriend;
 

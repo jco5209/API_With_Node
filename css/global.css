@@ -2537,9 +2537,16 @@ input[type="button"] {
 .new-tweet {
   display: none;
   cursor: pointer;
-  color: red;
-  border: 1px solid red;
-  border-radius: 25%;
+  color: #1da1f2;
+}
+
+.new-tweet:hover {
+  text-decoration: underline;
+}
+
+.app--tweet--list > .new-tweet {
+    padding: 10px;
+    text-align: center;
 }
 
 

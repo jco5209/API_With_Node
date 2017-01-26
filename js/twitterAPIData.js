@@ -1,7 +1,9 @@
 'use strict';
-const timeago = require('timeago.js');
-const winston = require('winston');
+const timeago = require('timeago.js'),
+winston 	  = require('winston');
 
+
+// Setup winston logging
 const tsFormat = () => (new Date()).toLocaleTimeString();
 
 const logger = new (winston.Logger)({
@@ -14,7 +16,7 @@ const logger = new (winston.Logger)({
     })
   ]
 });
-logger.level = 'debug';
+logger.level = 'error';
 
 // Determine unique user messages from reoccuring user messages 
 const dmConvo = (recieved, sent) => {
@@ -129,7 +131,7 @@ const mSCallback = (messages) => {
 
 // Callback for User's timeline
 const tweetsCallback = (tweets) => {
-
+	
 	logger.verbose('twitterAPIData.js: tweetsCallback(tweets) CALLED | ', 'Object Creator for twitterData.js: twitterTimeline() data | ')
 	logger.debug('twitterAPIData.js: tweetsCallback Argument | ', {tweetsCallback_argument: tweets});
 
@@ -140,6 +142,7 @@ const tweetsCallback = (tweets) => {
 	promise.screen_name = tweets[0].user.screen_name;
 	promise.profile_img = tweets[0].user.profile_image_url;
 	promise.tweets = [];
+	promise.friends_count = tweets[0].user.friends_count;
 
 	// Generate 10 tweet objects with properties of: tweet text; date tweeted; favorite count; retweet count
 	for(let i = 0; i < 10; i++) {
@@ -177,9 +180,10 @@ const friendsCallback = (friends) => {
 
 
 
-module.exports.dmConvo = dmConvo;
-module.exports.tweetsCallback = tweetsCallback;
+module.exports.dmConvo 		   = dmConvo;
+module.exports.tweetsCallback  = tweetsCallback;
 module.exports.friendsCallback = friendsCallback;
-module.exports.mRCallback = mRCallback;
-module.exports.mSCallback = mSCallback;
+module.exports.mRCallback 	   = mRCallback;
+module.exports.mSCallback 	   = mSCallback;
+
 

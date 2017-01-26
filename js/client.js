@@ -1,44 +1,72 @@
 (function() {
 	
-	var dmLog = $('.app--message--conversation');
-	var userLog = $('.user--log');
-	var log = $('.log');
-	var convos = $('.user--log--content');
+	var dmLog 		= $('.app--message--conversation'),
+	userLog 		= $('.user--log'),
+	log 			= $('.log'),
+	convos 			= $('.user--log--content'),
 
-	var tweet = $('#tweet-textarea');
-	var tweetButton = $('.button-primary');
-	var tweetChr = $('#tweet-char');
-	var tweetLimit = true;
-	var tweetCounter;
+	tweet 			= $('#tweet-textarea'),
+	tweetButton 	= $('.button-primary'),
+	tweetChr 		= $('#tweet-char'),
+	tweetLimit 		= true,
+	tweetCounter,
 
-	var tweetList = $('.app--tweet--list');
+	tweetList 		= $('.app--tweet--list'),
+	tweetNotif 		= false,
+	newTweetCounter = 1,
 
-	var appUserList = $('.app--user--list li');
-	var appUserListButton = $('.app--user--list li a.button')
+	following 		= $('.app--user--list li'),
+	followingButton = $('.app--user--list li a.button');
 
-	appUserListButton.click(function() {
-		// Add Unfollowed Notification
-		$.post('/unfriend/' + friends[appUserList.index($(this).parents("li"))].screen_name);
 
-		$(this).parents("li").slideToggle( "slow", function() {});
-	})
+	/* Event Handlers */
 
-	console.log(appUserList)
-
-	// Toggle Conversation Logs Display
-	userLog.click(function() {
-		convos.toggle();
-	});
+	// Unfollow selected 
+	followingButton.click(function() { unfriend(this); });
 
 
 	// On conversation log selection, load new conversation
-	log.click(function() {
+	log.click(function() { toggleLogs(this); });
+
+
+	// Toggle Conversation Logs Display
+	userLog.click(function() { convos.toggle(); });
+
+
+	// Post a tweet on button click
+	tweetButton.click(function(e) { e.preventDefault(); postTweet(); });
+
+
+	// On New Tweet Notification Click GET New Tweets
+	tweetList.on("click", ".new-tweet", function() { getNewTweets(); });
+
+
+	// On tweet text area input
+	tweet.on('change keyup paste', function() { tweetTextInput(); });	
+
+
+	/* Functions */
+
+	// Unfollow Selected
+	function unfriend(selected) {
+
+		// Add Unfollowed Notification
+		$.post('/unfriend/', { friend: friends[following.index($(selected).parents("li"))].screen_name} );
+
+		// Unfollowed animation
+		$(selected).parents("li").slideToggle( "slow", function() {});	
+
+	}	
+
+
+	// On conversation log selection, load new conversation
+	function toggleLogs(selected) {
 
 		// Index of selected conversation
-		var userIndex = log.index(this);
+		var userIndex = log.index(selected);
 
 		// Selected user text
-		var userText = $(this).text();
+		var userText = $(selected).text();
 
 		// Replace current user conversatoin with selected user
 		userLog.text(userText + ' ▼');
@@ -50,45 +78,63 @@
 		});
 
 		convos.toggle();
-
-	});
+	}
 
 
 	// Post a tweet on button click
-	tweetButton.click(function(e) {
-		e.preventDefault();
+	function postTweet() {
 
 		// If tweetLimit is true - there are 140 or less characters
 		if(tweetLimit) {
 
 			// Route POST request with tweet text data
-			$.post( "/status/" + tweet.val());
-			
+			$.post( "/status/", { tweet: tweet.val() } );
+
 			tweet.val(' ');
-			tweetChr.text('140');
+			tweetChr.text('140');			
 
-			// New Tweet Notification
-			$('.app--tweet--list').prepend('<li class="new-tweet"> +1</li>');
+			if(!tweetNotif) {
 
-			// Notification Animation
-			setTimeout(function(){$( ".new-tweet" ).slideDown( "slow", function() {});}, 1000);
-		}
-	});
+				// New Tweet Notification
+				tweetList.prepend('<li class="new-tweet">New Tweet(' + newTweetCounter + ')</li>');
+
+				tweetNotif = true;
+
+				// Notification Animation
+				setTimeout(function(){$( ".new-tweet" ).slideDown( "slow", function() {});}, 1000);
+
+			} else if(tweetNotif) {
+				newTweetCounter += 1;
+				$('.new-tweet').text('New Tweet(' + newTweetCounter + ')');
+			}
+
+		}		
+	}
+
 
 	// On New Tweet Notification Click GET New Tweets
-	$('.app--tweet--list').on("click", ".new-tweet", function() {
-		tweetList.html('');
+	function getNewTweets() {
+
+		// New tweet notification is now off
+		tweetNotif = false;
+
+		// Reset new tweets counter
+		newTweetCounter = 1;
 
 		// New Tweets Route
 		$.get("/newtweet/", function( data ) {
 
+			// Clear old tweets
+			tweetList.html('');
+
 			// New Tweets Data
 			tweetList.html(data);
-		});
-	})
+		});		
+	}
+
 
 	// On tweet text area input
-	tweet.on('change keyup paste', function() {
+	function tweetTextInput() {
 
 		// Calculate amount of characters left to use - limit is 140
 		tweetCounter = 140 - tweet.val().length;
@@ -96,12 +142,13 @@
 		// Visual for amount of characters left to use
 		tweetChr.text(tweetCounter);
 
+		// If character limit is exceeded
 		if(tweetCounter < 0) {
 
 			// Give tweetChr a visual indicator for too many characters
 			tweetChr.css('color', '#eb4a33');
 
-			// Set tweetLimi to false to reject POST request
+			// Set tweetLimit to false to reject POST request
 			tweetLimit = false;
 
 		// If tweetCounter is greater than 0 & too many character indicator is still applied			
@@ -112,15 +159,8 @@
 
 			// Set tweetLimit to true - enbles POST request
 			tweetLimit = true;
-		}
-	});
-
-
-
-
-
-
-
+		}		
+	}
 
 })()
 
