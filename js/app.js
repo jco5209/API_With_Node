@@ -50,18 +50,18 @@ messagesRecieved()
 
 .then(twitterFriends)
 
-.then((results) => {friendResults = results})
+.then((results) => {friendResults = results});
 
-// Once all API calls have been made & twitterData object has been created, render page with assigned data
-.then(() => {
-	app.get('/', (req, res) => {
-		res.render('layout', {
-			data: twitterData, 
-			tweets: twitterData.tweets, 
-			friends: friendResults.friends, 
-			logList: logList[0][0],
-			users: logList[1]
-		});
+// Routes
+
+// Main Page
+app.get('/', (req, res) => {
+	res.render('layout', {
+		data: twitterData, 
+		tweets: twitterData.tweets, 
+		friends: friendResults.friends, 
+		logList: logList[0][0],
+		users: logList[1]
 	});
 });
 
@@ -93,23 +93,39 @@ app.get('/newtweet/', (req, res) => {
 // Route to remove friend with twitter API POST request
 app.post('/unfriend/', (req, res) => {
 
-	// Call unfriend with req body variable: friend
+	// Call unfriend with req.body property: friend
 	unfriend(req.body.friend);
 
 	// End Route
 	return res.end();
-})
+});
 
 // Route to send tweet POST
 app.post('/status/', (req, res) => {
 
-	// Call statusUdate with req body variable: tweet
+	// Call statusUpdate with req.body property: tweet
 	statusUpdate(req.body.tweet);
 
 	// End Route
 	return res.end();
 });
 
+//Error Handlers
+
+app.use(function (req, res, next) {
+	console.log('404 error')
+	res.render('error', {
+		error: '404 page not found.'
+	})  
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  console.log('500 interal server error')
+	res.render('error', {
+		error: 'An internal server error has occured.'
+	})   
+})
 
 // Server
 app.listen(3000, () => {
