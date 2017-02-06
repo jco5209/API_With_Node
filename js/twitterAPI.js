@@ -1,5 +1,6 @@
 'use strict';
 const Twitter 	= require('twitter'),
+appKeys 				= require('./config.js'),
 format 		  	= require('dateformat'),
 timeago 	  	= require('timeago.js'),
 winston 	  	= require('winston'),
@@ -22,12 +23,12 @@ const logger = new (winston.Logger)({
 });
 logger.level = 'error';
 
-// Credentials are entered in process environment - this ensures the security of sensitive data
+// Credentials are required from the appKeys object, within a config.js file - this file is ignored within .gitignore
 const client = new Twitter({
-  consumer_key: process.env.TWITTER_CONSUMER_KEY,
-  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-  access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
-  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+  consumer_key: appKeys.consumer_key,
+  consumer_secret: appKeys.consumer_secret,
+  access_token_key: appKeys.access_token_key,
+  access_token_secret: appKeys.access_token_secret
 });
 
 
